@@ -3,128 +3,60 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Déclenchement lors des push vers la branche principale
+      - main
   pull_request:
     branches:
-      - main  # Déclenchement pour les pull requests vers la branche principale
+      - main
 
 jobs:
-  # Job pour le frontend React
-  build_frontend:
+  frontend:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out the code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Spécifie la version de Node.js
+          node-version: '14'
 
-      - name: Install dependencies for frontend
+      - name: Install dependencies
         run: |
           cd frontend
-          npm install  # Installer les dépendances du frontend
+          npm install
 
       - name: Run frontend tests
         run: |
           cd frontend
-          npm test -- --ci --silent --coverage  # Exécute les tests frontend
+          npm test -- --watchAll=false
 
       - name: Build frontend
         run: |
           cd frontend
-          npm run build  # Génère les fichiers de production
+          npm run build
 
-  # Job pour le backend Django
-  build_backend:
+  backend:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out the code
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'  # Spécifie la version de Python
+          python-version: '3.12'
 
-      - name: Install dependencies for backend
+      - name: Install dependencies
         run: |
           cd backend
-          python -m venv venv  # Crée un environnement virtuel
-          source venv/bin/activate
-          pip install -r requirements.txt  # Installer les dépendances du backend
-
-      - name: Run migrations for backend
-        run: |
-          cd backend
-          source venv/bin/activate
-          python manage.py migrate  # Applique les migrations si nécessaire
+          pip install -r requirements.txt
 
       - name: Run backend tests
         run: |
           cd backend
-          source venv/bin/activate
-          python manage.py test  # Exécute les tests backend
+          python manage.py test
 
-  # Job de déploiement du backend
-  deploy_backend:
-    needs: [build_backend]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out the code
-        uses: actions/checkout@v2
-
-      - name: Set up Python for deployment
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies for deployment
+      - name: Deploy backend (example, adjust for your needs)
         run: |
           cd backend
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt  # Installer les dépendances pour le backend
-
-      - name: Deploy Django to server
-        run: |
-          cd backend
-          source venv/bin/activate
-          python manage.py migrate  # Applique les migrations
-          # Ajouter ici les commandes de déploiement vers ton serveur (exemple pour SSH)
-          ssh -o StrictHostKeyChecking=no user@server "cd /path/to/backend && git pull origin main && systemctl restart gunicorn"
-
-  # Job de déploiement du frontend
-  deploy_frontend:
-  needs: [build_frontend]
-  runs-on: ubuntu-latest
-
-  steps:
-    - name: Check out the code
-      uses: actions/checkout@v2
-
-    - name: Set up Node.js for deployment
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
-    - name: Install dependencies for frontend
-      run: |
-        cd frontend
-        npm install
-
-    - name: Build frontend app
-      run: |
-        cd frontend
-        npm run build
-
-    - name: Deploy frontend to Vercel
-      uses: amondnet/vercel-action@v20
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}  # Token Vercel dans les secrets
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}  # ID du projet Vercel
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}  # ID de l'organisation Vercel
+          ssh user@your_server 'cd /path/to/your/app && git pull && docker-compose up -d'
