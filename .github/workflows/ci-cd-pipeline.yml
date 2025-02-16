@@ -1,0 +1,100 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Déclenchement lors des push vers la branche principale
+  pull_request:
+    branches:
+      - main  # Déclenchement pour les pull requests vers la branche principale
+
+jobs:
+  # Job pour le frontend React
+  build_frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Spécifie la version de Node.js
+
+      - name: Install dependencies for frontend
+        run: |
+          cd frontend
+          npm install  # Installer les dépendances du frontend
+
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm test -- --ci --silent --coverage  # Exécute les tests frontend
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build  # Génère les fichiers de production
+
+  # Job pour le backend Django
+  build_backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # Spécifie la version de Python
+
+      - name: Install dependencies for backend
+        run: |
+          cd backend
+          python -m venv venv  # Crée un environnement virtuel
+          source venv/bin/activate
+          pip install -r requirements.txt  # Installer les dépendances du backend
+
+      - name: Run migrations for backend
+        run: |
+          cd backend
+          source venv/bin/activate
+          python manage.py migrate  # Applique les migrations si nécessaire
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          source venv/bin/activate
+          python manage.py test  # Exécute les tests backend
+
+  # Job de déploiement du backend
+  deploy_backend:
+    needs: [build_backend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
+      - name: Set up Python for deployment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies for deployment
+        run: |
+          cd backend
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt  # Installer les dépendances pour le backend
+
+      - name: Deploy Django to server
+        run: |
+          cd backend
+          source venv/bin/activate
+          python manage.py migrate  # Applique les migrations
+          # Ajouter ici les commandes de déploiement vers ton serveur (exemple pour SSH)
+          ssh -o StrictHostKeyChecking=no user@server "cd /path/to/backend && git pull origin main && systemctl restart gunicorn"
+
