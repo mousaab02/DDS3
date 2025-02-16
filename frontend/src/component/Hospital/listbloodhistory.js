@@ -42,6 +42,19 @@ const ListBloodHistory = () => {
     }
   };
 
+  // Fonction pour effacer l'historique
+  const clearHistory = async () => {
+    try {
+      const accessToken = Cookies.get("access_token");
+      await axios.delete("http://localhost:8000/hospitals/clear_blood_history/", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setBloodHistory([]); // Efface l'historique côté frontend après suppression réussie
+    } catch (error) {
+      console.error("Error clearing blood history: ", error.message);
+    }
+  };
+
 
   // Appel de fetchBloodList une fois après le rendu initial
   useEffect(() => {
@@ -100,6 +113,7 @@ const ListBloodHistory = () => {
     setIsDetailsModalOpen(true);
   };
 
+
   return (
     <div className="container-fluid">
       <div className="row align-items-center">
@@ -147,6 +161,8 @@ const ListBloodHistory = () => {
           </Button>
         </div>
       </div>
+
+
 
       {/* Popup pour ajouter une nouvelle catégorie de sang */}
       {isAddModalOpen && (
@@ -244,12 +260,9 @@ const ListBloodHistory = () => {
         </Modal>
       )}
 
-      {/* Popup pour afficher l'historique des changements */}
+    {/* Popup pour afficher l'historique des changements */}
       {isHistoryModalOpen && (
-        <Modal
-          show={isHistoryModalOpen}
-          onHide={() => setIsHistoryModalOpen(false)}
-        >
+        <Modal show={isHistoryModalOpen} onHide={() => setIsHistoryModalOpen(false)}>
           <Modal.Header closeButton>
             <Modal.Title>History</Modal.Title>
           </Modal.Header>
@@ -258,8 +271,9 @@ const ListBloodHistory = () => {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>Type de Sang</th>
-                    <th>Change Type</th>
+                    <th>Blood Type</th>
+                    <th>Action</th>
+                    <th>Quantity Change</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -267,13 +281,11 @@ const ListBloodHistory = () => {
                   {bloodHistory.map((entry) => (
                     <tr key={entry.id}>
                       <td>{entry.blood_type}</td>
-                      <td>{entry.change_type}</td>
+                      <td>{entry.action}</td>
+                      <td>{entry.quantity_change}</td>
                       <td>
-                        <Button
-                          variant="info"
-                          onClick={() => openDetailsModal(entry)}
-                        >
-                          Détails
+                        <Button variant="info" onClick={() => openDetailsModal(entry)}>
+                          Details
                         </Button>
                       </td>
                     </tr>
@@ -281,26 +293,24 @@ const ListBloodHistory = () => {
                 </tbody>
               </Table>
             ) : (
-              <p>Nothig here yet</p>
+              <p>No history available</p>
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setIsHistoryModalOpen(false)}
-            >
-              Fermer
+            <Button variant="secondary" onClick={() => setIsHistoryModalOpen(false)}>
+              Close
             </Button>
+                    {/* Bouton pour effacer l'historique */}
+        <Button variant="danger" onClick={clearHistory} style={{ marginLeft: '10px' }}>
+        Clear History
+      </Button>
           </Modal.Footer>
         </Modal>
       )}
 
       {/* Popup pour afficher les détails d'un changement */}
       {isDetailsModalOpen && (
-        <Modal
-          show={isDetailsModalOpen}
-          onHide={() => setIsDetailsModalOpen(false)}
-        >
+        <Modal show={isDetailsModalOpen} onHide={() => setIsDetailsModalOpen(false)}>
           <Modal.Header closeButton>
             <Modal.Title>Details</Modal.Title>
           </Modal.Header>
@@ -311,30 +321,21 @@ const ListBloodHistory = () => {
                   <strong>Blood type:</strong> {selectedDetail.blood_type}
                 </p>
                 <p>
-                  <strong>Change type:</strong> {selectedDetail.change_type}
+                  <strong>Action:</strong> {selectedDetail.action}
                 </p>
                 <p>
-                  <strong>Quantity changed (ml):</strong>{" "}
-                  {selectedDetail.change_quantity}
+                  <strong>Quantity changed (ml):</strong> {selectedDetail.quantity_change}
                 </p>
                 <p>
-                  <strong>New quantity (ml):</strong>{" "}
-                  {selectedDetail.new_quantity}
-                </p>
-                <p>
-                  <strong>Date and Time:</strong>{" "}
-                  {new Date(selectedDetail.timestamp).toLocaleString()}
+                  <strong>Date and Time:</strong> {new Date(selectedDetail.timestamp).toLocaleString()}
                 </p>
               </div>
             ) : (
-              <p>Nothing changed yet</p>
+              <p>No details available</p>
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setIsDetailsModalOpen(false)}
-            >
+            <Button variant="secondary" onClick={() => setIsDetailsModalOpen(false)}>
               Close
             </Button>
           </Modal.Footer>

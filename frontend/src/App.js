@@ -35,7 +35,10 @@ const App = () => {
         <Route path="/Event/events/:eventId/" element={<EventDetailsPage />} />
         <Route path="/add_events" element={<EventMain />} />
         <Route path="/hospitals/list_blood" element={<BloodList />} />
-        <Route path="/hospitals/list_blood_history" element={<ListBloodHistory />} />
+        <Route
+          path="/hospitals/list_blood_history"
+          element={<ListBloodHistory />}
+        />
       </Routes>
     </Router>
   );

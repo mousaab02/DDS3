@@ -1,27 +1,35 @@
+/* BloodHistoryList.css */
+
 /* Centrer le contenu et prendre toute la largeur */
+.title {
+margin-left: 120px;
+
+}
+.title2 {
+  margin-left: -200px;
+  margin-top: -15px;
+  
+  }
+.butt {
+  margin-left: 215px;
+  
+  }
+
 .container-fluid {
   width: 100%;
   padding: 0 15px;
+  margin-top: 69px; /* Ajoutez une marge en haut */
 }
 
-/* Centrer le bouton */
-.d-flex.justify-content-center {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-/* Agrandir le tableau pour qu'il prenne toute la largeur de la page */
-.table-container {
-  width: 100%;
-  margin: 0 auto;
-}
-
+/* Styles pour le tableau */
 .table {
-  width: 100%;
-  background-color: white;
+  width: 70%; /* Prendre toute la largeur de la colonne */
+  background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  box-shadow: 10 10 100px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Ajoutez un espace en bas du tableau */
 }
 
 .table th,
@@ -31,24 +39,125 @@
 }
 
 .table thead {
-  
   color: white;
+  background-color: #343a40; /* Couleur de fond pour l'en-tête */
+}
+.table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 10px; /* Coin inférieur gauche arrondi */
 }
 
-/* Boutons à droite */
-.col-md-3 .btn {
-  width: 100%;
-  margin-bottom: 10px;
+
+.table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 10px; /* Coin inférieur droit arrondi */
 }
 
-/* Alignement vertical au milieu */
-.row.align-items-center {
-  align-items: center;
+.table thead th:first-child {
+  border-top-left-radius: 10px; /* Coin supérieur gauche arrondi */
 }
 
+.table thead th:last-child {
+  border-top-right-radius: 10px; /* Coin supérieur droit arrondi */
+}
+
+/* Styles pour la colonne md-3 contenant l'historique */
 .col-md-3 {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centrer les boutons verticalement */
-  padding-top: 85px; /* Supprimer le padding top */
+  justify-content: flex-start; /* Alignement du contenu en haut */
+  align-items: flex-start; /* Alignement des éléments à gauche */
+  padding-top: 20px; /* Espacement en haut */
+  margin-top: 0; /* Réinitialiser la marge en haut */
+}
+
+/* Styles pour l'historique */
+.timeline-container {
+  width: 1220%;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(27, 147, 228, 0.1);
+  padding: 42px;
+  margin-left: -250px;
+  margin-top: 85px;
+  margin-bottom: 69px;
+}
+.pad {
+  margin-top: 50px;
+}
+.all {
+  margin-left: 170px;
+}
+.timeline {
+  list-style-type: none;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -8px; /* Ajustement pour aligner le point avec la ligne */
+  top: 0;
+  width: 15px;
+  height: 15px;
+  background-color: #ff6b6b; /* Couleur du point */
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.timeline-content {
+  position: relative;
+  width: calc(100% - 30px); /* Ajustement au besoin */
+  padding-left: 20px; /* Espacement à gauche pour le contenu */
+  border-left: 2px solid #ccc; /* Bordure gauche pour le contenu */
+  margin-left: 15px; /* Espacement à gauche pour le point */
+  margin-top: -10x;
+}
+
+.timeline-line {
+  position: absolute;
+  left: -1px; /* Ajustement pour aligner avec le point */
+  width: 2px;
+  height: 100%; /* Ajustement de la hauteur */
+  background-color: #ff6b6b; /* Couleur de la ligne */
+  z-index: 0;
+}
+
+/* Styles pour le contenu */
+.content {
+  background-color: #f9fafb;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(27, 147, 228, 0.1);
+  margin-top: -10px;
+}
+
+.content h2 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: -10px;
+}
+
+.content p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: -20px;
+}
+
+.content p span {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Centrer le bouton */
+  margin-top: 20px; /* Espace au-dessus du bouton */
 }
